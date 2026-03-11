@@ -95,4 +95,23 @@ suite('GitRepo', () => {
       }
     );
   });
+
+  test('getStatus includes last 5 recent commits', async () => {
+    for (let i = 1; i <= 6; i++) {
+      fs.writeFileSync(path.join(tmpDir, `file${i}.txt`), `content${i}`);
+      await repo.stage([`file${i}.txt`]);
+      await repo.commit(`commit number ${i}`);
+    }
+    const status = await repo.getStatus();
+    assert.strictEqual(status.recentCommits.length, 5);
+    assert.strictEqual(status.recentCommits[0].message, 'commit number 6');
+    assert.strictEqual(status.recentCommits[4].message, 'commit number 2');
+  });
+
+  test('getStatus includes commit short hash and author', async () => {
+    const status = await repo.getStatus();
+    assert.ok(status.recentCommits.length >= 1);
+    assert.match(status.recentCommits[0].hash, /^[0-9a-f]{7}$/);
+    assert.strictEqual(status.recentCommits[0].author, 'Test');
+  });
 });

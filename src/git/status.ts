@@ -79,5 +79,5 @@ export function parseStatus(output: string): RepoStatus {
     }
   }
 
-  return { branch, head, headMessage: '', staged, unstaged, untracked };
+  return { branch, head, headMessage: '', staged, unstaged, untracked, recentCommits: [] };
 }

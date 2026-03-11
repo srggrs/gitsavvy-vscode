@@ -1,6 +1,6 @@
 import { GitCli } from './cli';
 import { parseStatus } from './status';
-import { RepoStatus } from '../types';
+import { RecentCommit, RepoStatus } from '../types';
 
 export class GitRepo {
   readonly cli: GitCli;
@@ -22,14 +22,24 @@ export class GitRepo {
 
     const status = parseStatus(result.stdout);
 
-    // Get HEAD commit message
+    // Get recent commits (last 5): hash, subject, author name, date
     const logResult = await this.cli.run(
       'log',
-      '-1',
-      '--format=%s'
+      '-5',
+      '--format=%h%x1f%s%x1f%an%x1f%ad',
+      '--date=short'
     );
     if (logResult.exitCode === 0) {
-      status.headMessage = logResult.stdout.trim();
+      const commits: RecentCommit[] = logResult.stdout
+        .trim()
+        .split('\n')
+        .filter(Boolean)
+        .map((line) => {
+          const [hash, message, author, date] = line.split('\x1f');
+          return { hash, message, author, date };
+        });
+      status.recentCommits = commits;
+      status.headMessage = commits[0]?.message ?? '';
     }
 
     return status;
