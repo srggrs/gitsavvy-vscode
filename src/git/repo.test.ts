@@ -69,4 +69,30 @@ suite('GitRepo', () => {
       }
     );
   });
+
+  test('checkoutNewBranch creates and switches to a new branch', async () => {
+    await repo.checkoutNewBranch('feature/test');
+    const status = await repo.getStatus();
+    assert.strictEqual(status.branch, 'feature/test');
+  });
+
+  test('checkoutNewBranch throws for invalid branch name', async () => {
+    await assert.rejects(
+      () => repo.checkoutNewBranch('invalid..name'),
+      (err: Error) => {
+        assert.ok(err.message.length > 0);
+        return true;
+      }
+    );
+  });
+
+  test('push throws when no remote is configured', async () => {
+    await assert.rejects(
+      () => repo.push(),
+      (err: Error) => {
+        assert.ok(err.message.length > 0);
+        return true;
+      }
+    );
+  });
 });

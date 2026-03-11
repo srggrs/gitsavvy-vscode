@@ -55,4 +55,18 @@ export class GitRepo {
       throw new Error(result.stderr.trim() || 'git commit failed');
     }
   }
+
+  async checkoutNewBranch(name: string): Promise<void> {
+    const result = await this.cli.run('checkout', '-b', name);
+    if (result.exitCode !== 0) {
+      throw new Error(result.stderr.trim() || 'git checkout failed');
+    }
+  }
+
+  async push(): Promise<void> {
+    const result = await this.cli.run('push');
+    if (result.exitCode !== 0) {
+      throw new Error(result.stderr.trim() || 'git push failed');
+    }
+  }
 }

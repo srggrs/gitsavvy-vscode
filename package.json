@@ -15,6 +15,10 @@
       {
         "command": "gitsavvy.openStatusDashboard",
         "title": "GitSavvy: Open Status Dashboard"
+      },
+      {
+        "command": "gitsavvy.checkoutNewBranch",
+        "title": "GitSavvy: Checkout New Branch"
       }
     ],
     "customEditors": [

@@ -125,6 +125,10 @@ export class StatusDashboardProvider
           }
           break;
         }
+        case 'push':
+          await this.repo.push();
+          await this.refreshStatus(panel);
+          break;
       }
     } catch (err) {
       this.postMessage(panel, {
@@ -203,7 +207,7 @@ export class StatusDashboardProvider
     <div id="sections"></div>
     <div id="footer">
       <hr>
-      <span class="hint">s: stage  u: unstage  d: diff  c: commit  Enter: open  r: refresh</span>
+      <span class="hint">s: stage  u: unstage  d: diff  c: commit  p: push  Enter: open  r: refresh</span>
     </div>
   </div>
   <script nonce="${nonce}" src="${scriptUri}"></script>
