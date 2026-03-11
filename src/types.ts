@@ -7,6 +7,13 @@ export interface FileStatus {
   origPath?: string;
 }
 
+export interface RecentCommit {
+  hash: string;
+  message: string;
+  author: string;
+  date: string;
+}
+
 export interface RepoStatus {
   branch: string;
   head: string;
@@ -14,6 +21,7 @@ export interface RepoStatus {
   staged: FileStatus[];
   unstaged: FileStatus[];
   untracked: FileStatus[];
+  recentCommits: RecentCommit[];
 }
 
 /** Messages from extension to WebView */

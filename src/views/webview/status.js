@@ -24,13 +24,30 @@
       '<div class="header-line"><span class="header-label">HEAD:</span> <span class="header-value">' + esc(currentStatus.head) + ' ' + esc(currentStatus.headMessage) + '</span></div>',
     ].join('');
 
+    // Recent commits section
+    var commitsHtml = '<div class="section-header">## recent commits</div>';
+    var commits = currentStatus.recentCommits || [];
+    if (commits.length === 0) {
+      commitsHtml += '<div class="empty-section">  (no commits)</div>';
+    } else {
+      for (var ci = 0; ci < commits.length; ci++) {
+        var c = commits[ci];
+        commitsHtml += '<div class="commit-entry">'
+          + '<span class="commit-hash">' + esc(c.hash) + '</span>'
+          + '<span class="commit-date">' + esc(c.date) + '</span>'
+          + '<span class="commit-author">' + esc(c.author) + '</span>'
+          + '<span class="commit-message">' + esc(c.message) + '</span>'
+          + '</div>';
+      }
+    }
+
     const sectionData = {
       staged: currentStatus.staged,
       unstaged: currentStatus.unstaged,
       untracked: currentStatus.untracked,
     };
 
-    let html = '';
+    let html = commitsHtml + '<div class="section-spacer"></div>';
     for (const name of sections) {
       const files = sectionData[name];
       html += '<div class="section-header">## ' + name + ' files</div>';
