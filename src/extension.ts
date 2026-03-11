@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as os from 'os';
 import { StatusDashboardProvider } from './views/statusDashboard';
+import { GitRepo } from './git/repo';
 
 export function activate(context: vscode.ExtensionContext) {
   const provider = new StatusDashboardProvider(context);
@@ -30,6 +31,35 @@ export function activate(context: vscode.ExtensionContext) {
           uri,
           StatusDashboardProvider.viewType
         );
+      }
+    )
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      'gitsavvy.checkoutNewBranch',
+      async () => {
+        const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+        if (!workspaceRoot) {
+          vscode.window.showErrorMessage('No workspace folder open');
+          return;
+        }
+
+        const branchName = await vscode.window.showInputBox({
+          prompt: 'New branch name',
+          placeHolder: 'feature/my-branch',
+        });
+        if (!branchName) return;
+
+        try {
+          const repo = new GitRepo(workspaceRoot);
+          await repo.checkoutNewBranch(branchName);
+          vscode.window.showInformationMessage(`Switched to new branch '${branchName}'`);
+        } catch (err) {
+          vscode.window.showErrorMessage(
+            err instanceof Error ? err.message : String(err)
+          );
+        }
       }
     )
   );

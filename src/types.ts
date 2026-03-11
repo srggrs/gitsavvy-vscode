@@ -28,4 +28,5 @@ export type WebViewMessage =
   | { type: 'openFile'; file: string }
   | { type: 'openDiff'; file: string }
   | { type: 'refresh' }
-  | { type: 'commit' };
+  | { type: 'commit' }
+  | { type: 'push' };

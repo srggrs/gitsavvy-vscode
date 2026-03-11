@@ -196,6 +196,9 @@
       case 'c':
         vscode.postMessage({ type: 'commit' });
         break;
+      case 'p':
+        vscode.postMessage({ type: 'push' });
+        break;
     }
   });
 
