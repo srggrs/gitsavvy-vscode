@@ -193,6 +193,9 @@
       case 'r':
         vscode.postMessage({ type: 'refresh' });
         break;
+      case 'c':
+        vscode.postMessage({ type: 'commit' });
+        break;
     }
   });
 

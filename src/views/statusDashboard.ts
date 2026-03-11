@@ -114,6 +114,17 @@ export class StatusDashboardProvider
         case 'refresh':
           await this.refreshStatus(panel);
           break;
+        case 'commit': {
+          const message = await vscode.window.showInputBox({
+            prompt: 'Commit message',
+            placeHolder: 'Enter commit message',
+          });
+          if (message) {
+            await this.repo.commit(message);
+            await this.refreshStatus(panel);
+          }
+          break;
+        }
       }
     } catch (err) {
       this.postMessage(panel, {
@@ -192,7 +203,7 @@ export class StatusDashboardProvider
     <div id="sections"></div>
     <div id="footer">
       <hr>
-      <span class="hint">s: stage  u: unstage  d: diff  Enter: open  r: refresh</span>
+      <span class="hint">s: stage  u: unstage  d: diff  c: commit  Enter: open  r: refresh</span>
     </div>
   </div>
   <script nonce="${nonce}" src="${scriptUri}"></script>

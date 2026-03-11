@@ -48,4 +48,11 @@ export class GitRepo {
       throw new Error(`git restore --staged failed: ${result.stderr}`);
     }
   }
+
+  async commit(message: string): Promise<void> {
+    const result = await this.cli.run('commit', '-m', message);
+    if (result.exitCode !== 0) {
+      throw new Error(result.stderr.trim() || 'git commit failed');
+    }
+  }
 }
