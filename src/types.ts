@@ -27,4 +27,5 @@ export type WebViewMessage =
   | { type: 'unstage'; files: string[] }
   | { type: 'openFile'; file: string }
   | { type: 'openDiff'; file: string }
-  | { type: 'refresh' };
+  | { type: 'refresh' }
+  | { type: 'commit' };

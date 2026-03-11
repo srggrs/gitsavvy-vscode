@@ -50,4 +50,23 @@ suite('GitRepo', () => {
     const status = await repo.getStatus();
     assert.strictEqual(status.headMessage, 'initial');
   });
+
+  test('commit creates a new commit with the given message', async () => {
+    fs.writeFileSync(path.join(tmpDir, 'file.txt'), 'hello');
+    await repo.stage(['file.txt']);
+    await repo.commit('add file.txt');
+    const status = await repo.getStatus();
+    assert.strictEqual(status.staged.length, 0);
+    assert.strictEqual(status.headMessage, 'add file.txt');
+  });
+
+  test('commit throws when nothing is staged', async () => {
+    await assert.rejects(
+      () => repo.commit('empty commit'),
+      (err: Error) => {
+        assert.ok(err.message.length > 0);
+        return true;
+      }
+    );
+  });
 });
