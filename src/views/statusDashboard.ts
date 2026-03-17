@@ -4,70 +4,81 @@ import * as fs from 'fs';
 import { GitRepo } from '../git/repo';
 import { ExtensionMessage, WebViewMessage } from '../types';
 
-class StatusDocument implements vscode.CustomDocument {
-  constructor(readonly uri: vscode.Uri) {}
-  dispose() {}
-}
-
-export class StatusDashboardProvider
-  implements vscode.CustomReadonlyEditorProvider<StatusDocument>
-{
+export class StatusDashboardProvider {
   static readonly viewType = 'gitsavvy.statusDashboard';
 
+  private panel: vscode.WebviewPanel | undefined;
   private repo: GitRepo | undefined;
-  private panels = new Set<vscode.WebviewPanel>();
-  private watcher: fs.FSWatcher | undefined;
 
   constructor(private readonly context: vscode.ExtensionContext) {}
 
-  openCustomDocument(
-    uri: vscode.Uri,
-    _openContext: vscode.CustomDocumentOpenContext,
-    _token: vscode.CancellationToken
-  ): StatusDocument {
-    return new StatusDocument(uri);
-  }
-
-  resolveCustomEditor(
-    _document: StatusDocument,
-    webviewPanel: vscode.WebviewPanel,
-    _token: vscode.CancellationToken
-  ): void {
-    this.panels.add(webviewPanel);
-    webviewPanel.onDidDispose(() => this.panels.delete(webviewPanel));
-
-    const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
-    if (!workspaceRoot) {
-      this.postMessage(webviewPanel, {
-        type: 'error',
-        message: 'No workspace folder open',
-      });
+  open(subscriptions: vscode.Disposable[]): void {
+    if (this.panel) {
+      this.panel.reveal();
       return;
     }
 
-    this.repo = new GitRepo(workspaceRoot);
+    const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+    if (!workspaceRoot) {
+      vscode.window.showErrorMessage('No workspace folder open');
+      return;
+    }
 
-    webviewPanel.webview.options = {
-      enableScripts: true,
-      localResourceRoots: [
-        vscode.Uri.joinPath(this.context.extensionUri, 'src', 'views', 'webview'),
-      ],
-    };
-
-    webviewPanel.webview.html = this.getHtml(webviewPanel.webview);
-
-    // Handle messages from WebView
-    webviewPanel.webview.onDidReceiveMessage(
-      (msg: WebViewMessage) => this.handleMessage(msg, webviewPanel),
-      undefined,
-      []
+    this.panel = vscode.window.createWebviewPanel(
+      StatusDashboardProvider.viewType,
+      'GitSavvy Status',
+      vscode.ViewColumn.One,
+      {
+        enableScripts: true,
+        localResourceRoots: [
+          vscode.Uri.joinPath(this.context.extensionUri, 'dist'),
+        ],
+      }
     );
 
-    // Initial status fetch
-    this.refreshStatus(webviewPanel);
+    this.repo = new GitRepo(workspaceRoot);
 
-    // Watch .git/index for changes
-    this.setupWatcher(workspaceRoot, webviewPanel);
+    this.panel.webview.html = this.getHtml(this.panel.webview);
+
+    const messageListener = this.panel.webview.onDidReceiveMessage(
+      (msg: WebViewMessage) => this.handleMessage(msg, this.panel!)
+    );
+
+    // Watch .git/ directory for changes.
+    // Git never modifies .git/index in place — it writes to .git/index.lock
+    // then renames it, replacing the inode. On Linux, fs.watch() uses inotify
+    // which tracks inodes, so watching the file directly never fires. Watching
+    // the directory catches the rename/create events for both index (staging)
+    // and HEAD (branch switches). Debounce to coalesce rapid events.
+    const gitDir = path.join(workspaceRoot, '.git');
+    let watcher: fs.FSWatcher | undefined;
+    let refreshTimer: ReturnType<typeof setTimeout> | undefined;
+    try {
+      watcher = fs.watch(gitDir, () => {
+        clearTimeout(refreshTimer);
+        refreshTimer = setTimeout(() => {
+          const p = this.panel;
+          if (p) {
+            this.refreshStatus(p);
+          }
+        }, 200);
+      });
+    } catch {
+      // .git might not exist yet
+    }
+
+    this.panel.onDidDispose(() => {
+      messageListener.dispose();
+      clearTimeout(refreshTimer);
+      watcher?.close();
+      this.panel = undefined;
+      this.repo = undefined;
+    });
+
+    subscriptions.push(this.panel);
+
+    // Initial status fetch
+    this.refreshStatus(this.panel);
   }
 
   private async handleMessage(
@@ -87,27 +98,18 @@ export class StatusDashboardProvider
           await this.refreshStatus(panel);
           break;
         case 'openFile': {
-          const wsRoot =
-            vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+          const wsRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
           if (wsRoot) {
-            const fileUri = vscode.Uri.file(
-              path.join(wsRoot, msg.file)
-            );
+            const fileUri = vscode.Uri.file(path.join(wsRoot, msg.file));
             await vscode.window.showTextDocument(fileUri);
           }
           break;
         }
         case 'openDiff': {
-          const wsRoot =
-            vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+          const wsRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
           if (wsRoot) {
-            const fileUri = vscode.Uri.file(
-              path.join(wsRoot, msg.file)
-            );
-            await vscode.commands.executeCommand(
-              'git.openChange',
-              fileUri
-            );
+            const fileUri = vscode.Uri.file(path.join(wsRoot, msg.file));
+            await vscode.commands.executeCommand('git.openChange', fileUri);
           }
           break;
         }
@@ -155,31 +157,10 @@ export class StatusDashboardProvider
     panel.webview.postMessage(msg);
   }
 
-  private setupWatcher(
-    workspaceRoot: string,
-    panel: vscode.WebviewPanel
-  ) {
-    const gitIndexPath = path.join(workspaceRoot, '.git', 'index');
-    try {
-      this.watcher?.close();
-      this.watcher = fs.watch(gitIndexPath, () => {
-        this.refreshStatus(panel);
-      });
-      panel.onDidDispose(() => {
-        this.watcher?.close();
-        this.watcher = undefined;
-      });
-    } catch {
-      // .git/index might not exist yet
-    }
-  }
-
   private getHtml(webview: vscode.Webview): string {
     const webviewDir = vscode.Uri.joinPath(
       this.context.extensionUri,
-      'src',
-      'views',
-      'webview'
+      'dist'
     );
 
     const cssUri = webview.asWebviewUri(
@@ -213,10 +194,6 @@ export class StatusDashboardProvider
   <script nonce="${nonce}" src="${scriptUri}"></script>
 </body>
 </html>`;
-  }
-
-  dispose() {
-    this.watcher?.close();
   }
 }
 
