@@ -44,22 +44,32 @@ export class StatusDashboardProvider {
       (msg: WebViewMessage) => this.handleMessage(msg, this.panel!)
     );
 
-    // Watch .git/index for changes
-    const gitIndexPath = path.join(workspaceRoot, '.git', 'index');
+    // Watch .git/ directory for changes.
+    // Git never modifies .git/index in place — it writes to .git/index.lock
+    // then renames it, replacing the inode. On Linux, fs.watch() uses inotify
+    // which tracks inodes, so watching the file directly never fires. Watching
+    // the directory catches the rename/create events for both index (staging)
+    // and HEAD (branch switches). Debounce to coalesce rapid events.
+    const gitDir = path.join(workspaceRoot, '.git');
     let watcher: fs.FSWatcher | undefined;
+    let refreshTimer: ReturnType<typeof setTimeout> | undefined;
     try {
-      watcher = fs.watch(gitIndexPath, () => {
-        const p = this.panel;
-        if (p) {
-          this.refreshStatus(p);
-        }
+      watcher = fs.watch(gitDir, () => {
+        clearTimeout(refreshTimer);
+        refreshTimer = setTimeout(() => {
+          const p = this.panel;
+          if (p) {
+            this.refreshStatus(p);
+          }
+        }, 200);
       });
     } catch {
-      // .git/index might not exist yet
+      // .git might not exist yet
     }
 
     this.panel.onDidDispose(() => {
       messageListener.dispose();
+      clearTimeout(refreshTimer);
       watcher?.close();
       this.panel = undefined;
       this.repo = undefined;
