@@ -31,7 +31,7 @@ export class StatusDashboardProvider {
       {
         enableScripts: true,
         localResourceRoots: [
-          vscode.Uri.joinPath(this.context.extensionUri, 'src', 'views', 'webview'),
+          vscode.Uri.joinPath(this.context.extensionUri, 'dist'),
         ],
       }
     );
@@ -49,8 +49,9 @@ export class StatusDashboardProvider {
     let watcher: fs.FSWatcher | undefined;
     try {
       watcher = fs.watch(gitIndexPath, () => {
-        if (this.panel) {
-          this.refreshStatus(this.panel);
+        const p = this.panel;
+        if (p) {
+          this.refreshStatus(p);
         }
       });
     } catch {
@@ -149,9 +150,7 @@ export class StatusDashboardProvider {
   private getHtml(webview: vscode.Webview): string {
     const webviewDir = vscode.Uri.joinPath(
       this.context.extensionUri,
-      'src',
-      'views',
-      'webview'
+      'dist'
     );
 
     const cssUri = webview.asWebviewUri(
