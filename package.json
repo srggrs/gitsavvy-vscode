@@ -20,18 +20,6 @@
         "command": "gitsavvy.checkoutNewBranch",
         "title": "GitSavvy: Checkout New Branch"
       }
-    ],
-    "customEditors": [
-      {
-        "viewType": "gitsavvy.statusDashboard",
-        "displayName": "GitSavvy Status",
-        "selector": [
-          {
-            "filenamePattern": "*.gitsavvy-status"
-          }
-        ],
-        "priority": "default"
-      }
     ]
   },
   "scripts": {
