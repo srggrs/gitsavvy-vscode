@@ -12,6 +12,12 @@ CLAUDE.md
 
 package-lock.json
 
+# editor
+*.subl
+
+# Dev files
+CONTRIBUTING.md
+
 # hidden folders
 .a*
 .b*
