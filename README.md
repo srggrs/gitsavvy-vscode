@@ -58,6 +58,10 @@ The dashboard automatically updates when the git index changes — staging or un
 - **Git CLI** — all git operations via `child_process.spawn` (same approach as the original GitSavvy).
 - **WebView Panel** — the dashboard opens as a `WebviewPanel`, behaving like an editor tab.
 
+## Limitations
+
+- **Multi-root workspaces:** only the first workspace folder is used. Additional roots are ignored.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, building, testing, and project structure.

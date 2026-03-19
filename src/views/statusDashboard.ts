@@ -101,15 +101,18 @@ export class StatusDashboardProvider {
         case 'openFile': {
           const wsRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
           if (wsRoot) {
-            const fileUri = vscode.Uri.file(path.join(wsRoot, msg.file));
-            await vscode.window.showTextDocument(fileUri);
+            const resolved = path.resolve(wsRoot, msg.file);
+            if (!resolved.startsWith(wsRoot + path.sep)) { break; }
+            await vscode.window.showTextDocument(vscode.Uri.file(resolved));
           }
           break;
         }
         case 'openDiff': {
           const wsRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
           if (wsRoot) {
-            const fileUri = vscode.Uri.file(path.join(wsRoot, msg.file));
+            const resolved = path.resolve(wsRoot, msg.file);
+            if (!resolved.startsWith(wsRoot + path.sep)) { break; }
+            const fileUri = vscode.Uri.file(resolved);
             try {
               await vscode.commands.executeCommand('git.openChange', fileUri);
             } catch {
@@ -132,10 +135,16 @@ export class StatusDashboardProvider {
           }
           break;
         }
-        case 'push':
-          await this.repo.push();
-          await this.refreshStatus(panel);
+        case 'push': {
+          const answer = await vscode.window.showWarningMessage(
+            'Push to remote?', 'Push', 'Cancel'
+          );
+          if (answer === 'Push') {
+            await this.repo.push();
+            await this.refreshStatus(panel);
+          }
           break;
+        }
       }
     } catch (err) {
       this.postMessage(panel, {

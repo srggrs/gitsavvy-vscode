@@ -2,6 +2,7 @@ import * as assert from 'assert';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as os from 'os';
+import { execSync } from 'child_process';
 import { GitRepo } from './repo';
 
 suite('GitRepo', () => {
@@ -10,15 +11,15 @@ suite('GitRepo', () => {
 
   setup(async () => {
     tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitsavvy-test-'));
+    const git = (cmd: string) => execSync(`git ${cmd}`, { cwd: tmpDir, stdio: 'ignore' });
+    git('init');
+    git('config user.email test@test.com');
+    git('config user.name Test');
     repo = new GitRepo(tmpDir);
-    const { cli } = repo;
-    await cli.run('init');
-    await cli.run('config', 'user.email', 'test@test.com');
-    await cli.run('config', 'user.name', 'Test');
     // Create initial commit so HEAD exists
     fs.writeFileSync(path.join(tmpDir, '.gitkeep'), '');
-    await cli.stage(['.gitkeep']);
-    await cli.run('commit', '-m', 'initial');
+    await repo.stage(['.gitkeep']);
+    await repo.commit('initial');
   });
 
   teardown(() => {
@@ -40,7 +41,7 @@ suite('GitRepo', () => {
 
   test('getStatus shows staged files', async () => {
     fs.writeFileSync(path.join(tmpDir, 'staged.txt'), 'hello');
-    await repo.cli.stage(['staged.txt']);
+    await repo.stage(['staged.txt']);
     const status = await repo.getStatus();
     assert.strictEqual(status.staged.length, 1);
     assert.strictEqual(status.staged[0].path, 'staged.txt');

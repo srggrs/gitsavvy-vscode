@@ -3,9 +3,9 @@ import { parseStatus } from './status';
 import { RecentCommit, RepoStatus } from '../types';
 
 export class GitRepo {
-  readonly cli: GitCli;
+  private readonly cli: GitCli;
 
-  constructor(private cwd: string) {
+  constructor(cwd: string) {
     this.cli = new GitCli(cwd);
   }
 
