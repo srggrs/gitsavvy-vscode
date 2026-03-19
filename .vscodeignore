@@ -13,7 +13,7 @@ CLAUDE.md
 package-lock.json
 
 # editor
-*.subl
+*.subl*
 
 # Dev files
 CONTRIBUTING.md
