@@ -38,6 +38,8 @@ s: stage  u: unstage  d: diff  Enter: open  r: refresh
 | `d` | Open VS Code diff |
 | `Enter` | Open file |
 | `Tab` | Cycle between sections |
+| `c` | Commit staged files |
+| `p` | Push to remote |
 | `r` | Refresh status |
 
 ### Auto-refresh
@@ -54,7 +56,7 @@ The dashboard automatically updates when the git index changes — staging or un
 
 - **Vanilla WebView** — plain HTML/CSS/JS, no framework. Uses VS Code CSS variables for native theming.
 - **Git CLI** — all git operations via `child_process.spawn` (same approach as the original GitSavvy).
-- **Custom Editor Tab** — the dashboard opens as a `CustomReadonlyEditorProvider`, so it behaves like a document tab (can be split, pinned, rearranged).
+- **WebView Panel** — the dashboard opens as a `WebviewPanel`, behaving like an editor tab.
 
 ## Contributing
 

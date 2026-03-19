@@ -8,6 +8,11 @@
     "vscode": "^1.85.0"
   },
   "license": "MIT",
+  "keywords": ["git", "scm", "gitsavvy", "keyboard", "status", "dashboard"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gitsavvy/gitsavvy-vscode.git"
+  },
   "categories": ["SCM Providers"],
   "activationEvents": [],
   "main": "./dist/extension.js",

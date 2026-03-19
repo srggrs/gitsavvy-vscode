@@ -8,7 +8,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run compile          # Build once (TypeScript → dist/extension.js via esbuild)
 npm run watch            # Build in watch mode (for development)
 npm run vscode:prepublish # Production build (minified)
-npm run lint             # ESLint on src/
 npm run test             # Integration tests via VS Code test runner
 npm run test:unit        # Unit tests only (mocha on out/git/*.test.js)
 npm run pretest          # tsc compile before testing (run automatically before test)
@@ -22,20 +21,20 @@ This is a VS Code extension providing a keyboard-driven Git status dashboard (in
 
 **Extension → WebView communication:** `postMessage` with typed `ExtensionMessage` / `WebViewMessage` interfaces defined in `types.ts`. The extension sends `repoStatus` messages to update the UI; the webview sends action messages (`stage`, `unstage`, `commit`, `push`, `checkoutNewBranch`) back to the extension.
 
-**Auto-refresh:** `statusDashboard.ts` watches `.git/index` via `fs.watch` and refreshes the webview on changes.
+**Auto-refresh:** `statusDashboard.ts` watches the `.git/` directory via `fs.watch` and refreshes the webview on changes (debounced 200ms).
 
-**Custom Editor:** The dashboard opens as a `CustomReadonlyEditorProvider` for `.gitsavvy-status` files, allowing it to behave like a document tab.
+**WebView Panel:** The dashboard opens as a `WebviewPanel` via `vscode.window.createWebviewPanel`, behaving like an editor tab.
 
 ### Layer responsibilities
 
 | Layer | Files | Role |
 |---|---|---|
-| Entry point | `src/extension.ts` | Registers commands and the custom editor provider |
+| Entry point | `src/extension.ts` | Registers commands and opens the webview panel |
 | Types | `src/types.ts` | Shared interfaces for data and message protocols |
 | Git CLI | `src/git/cli.ts` | Raw `child_process.spawn` wrapper for git commands |
 | Git operations | `src/git/repo.ts` | High-level API: getStatus, stage, unstage, commit, push, checkoutNewBranch |
 | Git parsing | `src/git/status.ts` | Parses `git status --porcelain=v2` output into typed structs |
-| UI provider | `src/views/statusDashboard.ts` | CustomReadonlyEditorProvider, WebView lifecycle, message dispatch |
+| UI provider | `src/views/statusDashboard.ts` | WebviewPanel lifecycle, message dispatch |
 | WebView client | `src/views/webview/status.js` | Vanilla JS rendering, vim-style keyboard nav (j/k/Tab), click handling |
 | WebView styles | `src/views/webview/status.css` | Styling using VS Code CSS variables for theme integration |
 

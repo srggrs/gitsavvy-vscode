@@ -18,6 +18,7 @@ const esbuildProblemMatcherPlugin = {
           console.error(`    ${location.file}:${location.line}:${location.column}:`);
         }
       });
+      copyWebviewAssets();
       console.log('[watch] build finished');
     });
   },
@@ -37,7 +38,6 @@ async function main() {
     logLevel: 'silent',
     plugins: [esbuildProblemMatcherPlugin],
   });
-  copyWebviewAssets();
   if (watch) {
     await ctx.watch();
   } else {

@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
+import * as crypto from 'crypto';
 import { GitRepo } from '../git/repo';
 import { ExtensionMessage, WebViewMessage } from '../types';
 
@@ -109,7 +110,11 @@ export class StatusDashboardProvider {
           const wsRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
           if (wsRoot) {
             const fileUri = vscode.Uri.file(path.join(wsRoot, msg.file));
-            await vscode.commands.executeCommand('git.openChange', fileUri);
+            try {
+              await vscode.commands.executeCommand('git.openChange', fileUri);
+            } catch {
+              await vscode.window.showTextDocument(fileUri);
+            }
           }
           break;
         }
@@ -198,11 +203,5 @@ export class StatusDashboardProvider {
 }
 
 function getNonce(): string {
-  let text = '';
-  const chars =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  for (let i = 0; i < 32; i++) {
-    text += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return text;
+  return crypto.randomBytes(16).toString('hex');
 }

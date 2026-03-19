@@ -59,7 +59,7 @@
           const selected = cursor.section === name && cursor.index === i;
           const label = f.origPath ? f.path + ' \u2190 ' + f.origPath : f.path;
           html += '<div class="file-entry' + (selected ? ' selected' : '') + '"'
-            + ' data-section="' + name + '" data-index="' + i + '" data-path="' + esc(f.path) + '">'
+            + ' data-section="' + name + '" data-index="' + i + '" data-path="' + escAttr(f.path) + '">'
             + '<span class="file-status ' + esc(f.statusCode) + '">' + esc(f.statusCode) + '</span>'
             + '<span class="file-path">' + esc(label) + '</span>'
             + '</div>';
@@ -80,6 +80,11 @@
     const el = document.createElement('span');
     el.textContent = s;
     return el.innerHTML;
+  }
+
+  /** @param {string} s */
+  function escAttr(s) {
+    return esc(s).replace(/"/g, '&quot;');
   }
 
   function getFilesForSection(section) {
