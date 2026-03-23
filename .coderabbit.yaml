@@ -6,3 +6,4 @@ reviews:
       - "develop"
       - "release/.*"
       - "hotfix/.*"
+      - "feat/.*"
