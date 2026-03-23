@@ -1,0 +1,9 @@
+# .coderabbit.yaml
+reviews:
+  auto_review:
+    base_branches:
+      - "main"
+      - "develop"
+      - "release/.*"
+      - "hotfix/.*"
+      - "feat/.*"
