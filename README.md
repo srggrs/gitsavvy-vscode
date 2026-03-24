@@ -1,6 +1,6 @@
 # GitSavvy for VS Code
 
-A port of [GitSavvy](https://github.com/timbrel/GitSavvy) (Sublime Text) to Visual Studio Code. Keyboard-driven git integration with a plain-text status dashboard.
+An adaptation of [GitSavvy](https://github.com/timbrel/GitSavvy) (Sublime Text) to Visual Studio Code. Keyboard-driven git integration with a plain-text status dashboard.
 
 ## Features
 
