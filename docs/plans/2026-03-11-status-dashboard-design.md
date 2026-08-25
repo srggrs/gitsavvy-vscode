@@ -7,7 +7,7 @@ Port of GitSavvy's Sublime Text status dashboard to VS Code. The dashboard opens
 ## Scope (v1)
 
 - Status dashboard only (no log, branch, or stash views)
-- Single repository support (no multi-root workspaces)
+- Single repository support (no multi-root workspaces)/s
 - Three file sections: staged, unstaged, untracked
 - Actions: stage, unstage, open file, open diff (VS Code built-in)
 - Git operations via CLI (`child_process.spawn`)
@@ -71,15 +71,15 @@ s: stage  u: unstage  d: diff
 
 When the dashboard WebView is focused:
 
-| Key | Action |
-|-----|--------|
-| `j` / `k` / arrows | Navigate files |
-| `s` | Stage file |
-| `u` | Unstage file |
-| `d` | Open VS Code built-in diff |
-| `Enter` | Open file in editor |
-| `Tab` | Cycle between sections |
-| `r` | Refresh status |
+| Key                | Action                     |
+| ------------------ | -------------------------- |
+| `j` / `k` / arrows | Navigate files             |
+| `s`                | Stage file                 |
+| `u`                | Unstage file               |
+| `d`                | Open VS Code built-in diff |
+| `Enter`            | Open file in editor        |
+| `Tab`              | Cycle between sections     |
+| `r`                | Refresh status             |
 
 ## Command Palette Commands
 
