@@ -1,0 +1,12 @@
+# .coderabbit.yaml
+reviews:
+  auto_review:
+    base_branches:
+      - "main"
+      - "develop"
+      - "release/.*"
+      - "hotfix/.*"
+      - "feat/.*"
+    path_instructions:
+      - path: ".gitignore"
+        instructions: "Do not review - gitignore patterns already reviewed"

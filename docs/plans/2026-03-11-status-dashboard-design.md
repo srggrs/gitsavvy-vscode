@@ -71,15 +71,15 @@ s: stage  u: unstage  d: diff
 
 When the dashboard WebView is focused:
 
-| Key | Action |
-|-----|--------|
-| `j` / `k` / arrows | Navigate files |
-| `s` | Stage file |
-| `u` | Unstage file |
-| `d` | Open VS Code built-in diff |
-| `Enter` | Open file in editor |
-| `Tab` | Cycle between sections |
-| `r` | Refresh status |
+| Key                | Action                     |
+| ------------------ | -------------------------- |
+| `j` / `k` / arrows | Navigate files             |
+| `s`                | Stage file                 |
+| `u`                | Unstage file               |
+| `d`                | Open VS Code built-in diff |
+| `Enter`            | Open file in editor        |
+| `Tab`              | Cycle between sections     |
+| `r`                | Refresh status             |
 
 ## Command Palette Commands
 

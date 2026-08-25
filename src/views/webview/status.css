@@ -1,0 +1,123 @@
+body {
+  font-family: var(--vscode-editor-font-family, monospace);
+  font-size: var(--vscode-editor-font-size, 14px);
+  color: var(--vscode-editor-foreground);
+  background-color: var(--vscode-editor-background);
+  padding: 16px;
+  line-height: 1.6;
+  cursor: default;
+  user-select: none;
+}
+
+#header {
+  margin-bottom: 16px;
+}
+
+.header-line {
+  color: var(--vscode-descriptionForeground);
+}
+
+.header-label {
+  display: inline-block;
+  min-width: 80px;
+}
+
+.header-value {
+  color: var(--vscode-editor-foreground);
+}
+
+.section-header {
+  color: var(--vscode-textLink-foreground);
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.file-entry {
+  padding: 2px 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.file-entry:hover {
+  background-color: var(--vscode-list-hoverBackground);
+}
+
+.file-entry.selected {
+  background-color: var(--vscode-list-activeSelectionBackground);
+  color: var(--vscode-list-activeSelectionForeground);
+}
+
+.file-status {
+  display: inline-block;
+  min-width: 24px;
+  margin-right: 8px;
+}
+
+.file-status.M { color: var(--vscode-gitDecoration-modifiedResourceForeground, #e2c08d); }
+.file-status.A { color: var(--vscode-gitDecoration-addedResourceForeground, #81b88b); }
+.file-status.D { color: var(--vscode-gitDecoration-deletedResourceForeground, #c74e39); }
+.file-status.R { color: var(--vscode-gitDecoration-renamedResourceForeground, #73c991); }
+.file-status.\? { color: var(--vscode-gitDecoration-untrackedResourceForeground, #73c991); }
+
+.file-path {
+  flex: 1;
+}
+
+#footer {
+  margin-top: 24px;
+}
+
+#footer hr {
+  border: none;
+  border-top: 1px solid var(--vscode-panel-border);
+}
+
+.hint {
+  color: var(--vscode-descriptionForeground);
+  font-size: 0.9em;
+}
+
+.empty-section {
+  color: var(--vscode-disabledForeground);
+  padding-left: 8px;
+  font-style: italic;
+}
+
+.commit-entry {
+  padding: 1px 8px;
+  display: flex;
+  gap: 12px;
+  font-size: 0.95em;
+}
+
+.commit-hash {
+  color: var(--vscode-textLink-foreground);
+  min-width: 52px;
+  font-family: var(--vscode-editor-font-family, monospace);
+}
+
+.commit-date {
+  color: var(--vscode-descriptionForeground);
+  min-width: 86px;
+}
+
+.commit-author {
+  color: var(--vscode-descriptionForeground);
+  min-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.commit-message {
+  color: var(--vscode-editor-foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.section-spacer {
+  margin-top: 8px;
+}

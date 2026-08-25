@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'none'; style-src ${cspSource} 'unsafe-inline'; script-src 'nonce-${nonce}';">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="${cssUri}" rel="stylesheet">
+  <title>GitSavvy Status</title>
+</head>
+<body>
+  <div id="dashboard">
+    <div id="header">Loading...</div>
+    <div id="sections"></div>
+    <div id="footer">
+      <hr>
+      <span class="hint">s: stage  u: unstage  d: diff  c: commit  p: push  Enter: open  r: refresh</span>
+    </div>
+  </div>
+  <script nonce="${nonce}" src="${scriptUri}"></script>
+</body>
+</html>
