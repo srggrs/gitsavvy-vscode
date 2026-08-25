@@ -4,6 +4,9 @@ out/
 *.vsix
 *.s*
 
+# ai assisted editor
+opencode.json
+
 # hidden folders
 .a*
 .b*
@@ -31,3 +34,7 @@ out/
 .x*
 .y*
 .z*
+
+# remove ignore files
+!.coderabbit.yaml
+!.vscode/*.json

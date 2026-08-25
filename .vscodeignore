@@ -15,6 +15,9 @@ package-lock.json
 # editor
 *.subl*
 
+# ai assisted editor
+opencode.json
+
 # Dev files
 CONTRIBUTING.md
 
