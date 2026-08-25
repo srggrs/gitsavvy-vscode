@@ -38,3 +38,4 @@ opencode.json
 # remove ignore files
 !.coderabbit.yaml
 !.vscode/*.json
+!.vscode-test.mjs
