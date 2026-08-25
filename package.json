@@ -7,7 +7,9 @@
   "engines": {
     "vscode": "^1.85.0"
   },
-  "categories": ["SCM Providers"],
+  "categories": [
+    "SCM Providers"
+  ],
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
@@ -32,12 +34,15 @@
     "test:unit": "mocha out/git/*.test.js --timeout 10000"
   },
   "devDependencies": {
+    "@types/mocha": "^10.0.0",
     "@types/node": "^22.0.0",
     "@types/vscode": "^1.85.0",
-    "@types/mocha": "^10.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.68.0",
+    "@typescript-eslint/parser": "^8.68.0",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
     "esbuild": "^0.24.0",
+    "eslint": "^9.39.5",
     "mocha": "^10.0.0",
     "typescript": "^5.7.0"
   }

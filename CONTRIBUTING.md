@@ -36,15 +36,15 @@ The dashboard opens as an editor tab showing staged, unstaged, and untracked fil
 
 ### Keyboard Shortcuts (in the dashboard)
 
-| Key | Action |
-|-----|--------|
+| Key                | Action         |
+| ------------------ | -------------- |
 | `j` / `k` / arrows | Navigate files |
-| `s` | Stage file |
-| `u` | Unstage file |
-| `d` | Open diff |
-| `Enter` | Open file |
-| `Tab` | Cycle sections |
-| `r` | Refresh |
+| `s`                | Stage file     |
+| `u`                | Unstage file   |
+| `d`                | Open diff      |
+| `Enter`            | Open file      |
+| `Tab`              | Cycle sections |
+| `r`                | Refresh        |
 
 ## Running Tests
 
@@ -58,7 +58,7 @@ npx tsc && npx mocha 'out/git/*.test.js' --timeout 10000 --ui tdd
 
 ## Project Structure
 
-```
+```text
 src/
 ├── extension.ts              # Entry point, registers commands and providers
 ├── types.ts                  # Shared TypeScript types
@@ -70,7 +70,7 @@ src/
 │   ├── status.ts             # Parses git status --porcelain=v2 output
 │   └── status.test.ts        # Parser unit tests
 └── views/
-    ├── statusDashboard.ts    # CustomReadonlyEditorProvider (WebView editor tab)
+    ├── statusDashboard.ts    # Webview panel provider (dashboard lifecycle + message bridge)
     └── webview/
         ├── status.html       # HTML template (reference only)
         ├── status.css        # Dashboard styles (uses VS Code CSS variables)

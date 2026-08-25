@@ -21,11 +21,11 @@ Use `vscode.window.createWebviewPanel` directly. No file on disk is needed.
 - Add `open(subscriptions: vscode.Disposable[]): void` method that:
   - If `this.panel` is already set, calls `this.panel.reveal()` and returns
   - Checks for a workspace folder before creating the panel; if none exists, calls `vscode.window.showErrorMessage('No workspace folder open')` and returns
-  - Otherwise calls `vscode.window.createWebviewPanel('gitsavvy.statusDashboard', 'GitSavvy Status', vscode.ViewColumn.One, { enableScripts: true, localResourceRoots: [vscode.Uri.joinPath(this.context.extensionUri, 'src', 'views', 'webview')] })` — `retainContextWhenHidden` is intentionally omitted; the dashboard re-fetches status on open so rebuilding the webview on show is acceptable
+  - Otherwise calls `vscode.window.createWebviewPanel('gitsavvy.statusDashboard', 'GitSavvy Status', vscode.ViewColumn.One, { enableScripts: true, localResourceRoots: [vscode.Uri.joinPath(this.context.extensionUri, 'dist')] })` — `retainContextWhenHidden` is intentionally omitted; the dashboard re-fetches status on open so rebuilding the webview on show is acceptable
   - Note: the separate `webviewPanel.webview.options = { ... }` assignment that exists in the current `resolveCustomEditor` is removed; options are passed directly as the fourth argument to `createWebviewPanel`
   - Assigns result to `this.panel`; pushes `this.panel` to `subscriptions` (`vscode.WebviewPanel` implements `vscode.Disposable` so this is valid) for cleanup at extension deactivation. If the user closes the panel normally before deactivation, `onDidDispose` fires and clears `this.panel`, so a subsequent call to `open()` will create a fresh panel correctly
   - Registers `onDidReceiveMessage`; captures its return value (a `vscode.Disposable`) and disposes it in `onDidDispose` (replaces the current `[]` third-argument pattern, which was incorrect — the third argument to `onDidReceiveMessage` is `thisArg`, not a disposables array)
-  - Wires up webview HTML, message handling, and the `.git/index` watcher — same logic as current `resolveCustomEditor`
+  - Wires up webview HTML, message handling, and the `.git/` directory watcher (debounced at 200ms) — same logic as current `resolveCustomEditor`
   - The watcher is created once and closed in `onDidDispose`; the close-before-create guard from `setupWatcher` is dropped as it is dead code in the single-panel design
 
 ### `extension.ts` (refactored)

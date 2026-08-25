@@ -92,10 +92,13 @@ export class StatusDashboardProvider {
     const gitIndexPath = path.join(workspaceRoot, '.git', 'index');
     let watcher: fs.FSWatcher | undefined;
     try {
-      watcher = fs.watch(gitIndexPath, () => {
-        if (this.panel) {
-          this.refreshStatus(this.panel);
-        }
+      watcher = fs.watch(gitDir, () => {
+        clearTimeout(refreshTimer);
+        refreshTimer = setTimeout(() => {
+          if (this.panel) {
+            this.refreshStatus(this.panel);
+          }
+        }, 200);
       });
     } catch {
       // .git/index might not exist yet
@@ -103,6 +106,7 @@ export class StatusDashboardProvider {
 
     this.panel.onDidDispose(() => {
       messageListener.dispose();
+      clearTimeout(refreshTimer);
       watcher?.close();
       this.panel = undefined;
       this.repo = undefined;

@@ -22,9 +22,9 @@ This is a VS Code extension providing a keyboard-driven Git status dashboard (in
 
 **Extension → WebView communication:** `postMessage` with typed `ExtensionMessage` / `WebViewMessage` interfaces defined in `types.ts`. The extension sends `repoStatus` messages to update the UI; the webview sends action messages (`stage`, `unstage`, `commit`, `push`, `checkoutNewBranch`) back to the extension.
 
-**Auto-refresh:** `statusDashboard.ts` watches `.git/index` via `fs.watch` and refreshes the webview on changes.
+**Auto-refresh:** `statusDashboard.ts` watches `.git/` directory via `fs.watch` and refreshes the webview on changes, debounced at 200ms.
 
-**Custom Editor:** The dashboard opens as a `CustomReadonlyEditorProvider` for `.gitsavvy-status` files, allowing it to behave like a document tab.
+**Custom Editor:** The dashboard opens via `vscode.window.createWebviewPanel`, and can be revealed/reopened as a panel-based view.
 
 ### Layer responsibilities
 
@@ -35,7 +35,7 @@ This is a VS Code extension providing a keyboard-driven Git status dashboard (in
 | Git CLI | `src/git/cli.ts` | Raw `child_process.spawn` wrapper for git commands |
 | Git operations | `src/git/repo.ts` | High-level API: getStatus, stage, unstage, commit, push, checkoutNewBranch |
 | Git parsing | `src/git/status.ts` | Parses `git status --porcelain=v2` output into typed structs |
-| UI provider | `src/views/statusDashboard.ts` | CustomReadonlyEditorProvider, WebView lifecycle, message dispatch |
+| UI provider | `src/views/statusDashboard.ts` | Webview panel provider, WebView lifecycle, message dispatch |
 | WebView client | `src/views/webview/status.js` | Vanilla JS rendering, vim-style keyboard nav (j/k/Tab), click handling |
 | WebView styles | `src/views/webview/status.css` | Styling using VS Code CSS variables for theme integration |
 

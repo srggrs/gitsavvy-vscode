@@ -13,6 +13,7 @@ suite('GitRepo', () => {
     repo = new GitRepo(tmpDir);
     const { cli } = repo;
     await cli.run('init');
+    await cli.run('branch', '-M', 'main');
     await cli.run('config', 'user.email', 'test@test.com');
     await cli.run('config', 'user.name', 'Test');
     // Create initial commit so HEAD exists

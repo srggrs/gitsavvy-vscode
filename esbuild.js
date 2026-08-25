@@ -39,6 +39,12 @@ async function main() {
   });
   copyWebviewAssets();
   if (watch) {
+    const webviewDir = path.join(__dirname, 'src', 'views', 'webview');
+    fs.watch(webviewDir, (_eventType, filename) => {
+      if (filename === 'status.js' || filename === 'status.css') {
+        copyWebviewAssets();
+      }
+    });
     await ctx.watch();
   } else {
     await ctx.rebuild();

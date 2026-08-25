@@ -243,11 +243,13 @@
         render();
         break;
       case 'error':
+      {
         var header = document.getElementById('header');
         if (header) {
           header.innerHTML = '<div class="header-line" style="color: var(--vscode-errorForeground)">Error: ' + esc(msg.message) + '</div>';
         }
         break;
+      }
     }
   });
 })();

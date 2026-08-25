@@ -22,10 +22,10 @@ export function activate(context: vscode.ExtensionContext) {
           return;
         }
 
-        const branchName = await vscode.window.showInputBox({
+        const branchName = (await vscode.window.showInputBox({
           prompt: 'New branch name',
           placeHolder: 'feature/my-branch',
-        });
+        }))?.trim();
         if (!branchName) return;
 
         try {
