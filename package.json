@@ -1,12 +1,13 @@
 {
   "name": "gitsavvy-vscode",
   "displayName": "GitSavvy",
-  "description": "GitSavvy-style git integration for VS Code",
+  "description": "GitSavvy-style git integration for VSCode/VSCodium. Git terminal like within VSCode/VSCodium",
   "version": "0.1.0",
-  "publisher": "gitsavvy",
+  "publisher": "srggrs-labs",
   "engines": {
     "vscode": "^1.85.0"
   },
+  "icon": "assets/logo.png",
   "categories": [
     "SCM Providers"
   ],
