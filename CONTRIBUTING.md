@@ -9,7 +9,7 @@
 ## Setup
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/srggrs/gitsavvy-vscode.git
 cd gitsavvy-vscode
 npm install
 ```
